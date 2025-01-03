@@ -147,7 +147,7 @@ Copyright © 2019 Kapa.XL All Rights Reserved**.**
 
 [Preface](#preface)
 
-[	I Content of the document](#content-of-the-document)
+​	[I Content of the document](#content-of-the-document)
 
 ​	[II References from the document](#references-from-the-document)
 
@@ -159,175 +159,175 @@ Copyright © 2019 Kapa.XL All Rights Reserved**.**
 
 ------
 
-[Chapter 1 Introduction](#Chapter 1 - Introduction)
+[Chapter 1 Introduction](#chapter-1---introduction)
 
-[1.1 What is MbedTEE](#1.1 What is MbedTEE)
+[1.1 What is MbedTEE](#11-what-is-mbedtee)
 
-[1.2 What is TA](#1.2 what-is-ta)
+[1.2 What is TA](#12-what-is-ta)
 
-[1.3 Hardware Architecture](#1.3 hardware-architecture)
+[1.3 Hardware Architecture](#13-hardware-architecture)
 
-​	[1.3.1 ARM TrustZone based architecture](#1.3.1 arm-trustzone-based-architecture)
+​	[1.3.1 ARM TrustZone based architecture](#131-arm-trustzone-based-architecture)
 
-​	[1.3.2 RISCV based architecture](#1.3.2 riscv-based-architecture)
+​	[1.3.2 RISCV based architecture](#132-riscv-based-architecture)
 
-​	[1.3.3 MIPS based architecture](#1.3.3 mips-based-architecture)
-
-------
-
-[Chapter 2 Overview](#chapter 2 - overview)
-
-[2.1 Working Model](#2.1 working-model)
-
-[2.2 Processor Initialization](#2.2 processor-initialization)
-
-[2.3 Exception Levels](#2.3 exception-levels)
-
-​	[2.3.1 Exception Levels of ARM](#2.3.1 exception-levels-of-arm)
-
-​	[2.3.2 Exception Levels of RISCV](#2.3.2 exception-levels-of-riscv)
-
-[	2.3.3 Exception Levels of MIPS](#2.3.3 exception-levels-of-mips)
-
-[2.4 Multi-threading](#2.4 multi-threading)
-
-​	[2.4.1 Thread](#2.4.1 thread)
-
-​	[2.4.2 Process](#2.4.2 process)
-
-​	[2.4.3 User thread](#2.4.3 user-thread)
-
-​	[2.4.4 Kernel thread](#2.4.4 kernel-thread)
-
-​	[2.4.5 Thread ID](#2.4.5 thread-id)
-
-​	[2.4.6 POSIX Thread ID](#2.4.6 posix-thread-id)
-
-​	[2.4.7 Process ID](#2.4.7 process-id)
-
-[2.5 Scheduler](#2.5 scheduler)
-
-​	[2.5.1 SCHED_FIFO](#2.5.1 sched_fifo)
-
-​	[2.5.2 SCHED_RR](#2.5.2 sched_rr)
-
-​	[2.5.3 SCHED_OTHER](#2.5.3 sched_other)
-
-​	[2.5.4 Priority](#2.5.4 priority)
-
-[2.6 Exception Handling](#2.6 exception-handling)
+​	[1.3.3 MIPS based architecture](#133-mips-based-architecture)
 
 ------
 
-[Chapter 3 Context Switch](#chapter 3 - context-switch)
+[Chapter 2 Overview](#chapter-2---overview)
 
-[3.1 Context Switch of ARM](#3.1 context-switch-of-arm)
+[2.1 Working Model](#21-working-model)
 
-​	[3.1.1 REE SMC](#3.1.1 ree-smc)
+[2.2 Processor Initialization](#22-processor-initialization)
 
-​	[3.1.2 TEE SMC](#3.1.2 tee-smc)
+[2.3 Exception Levels](#23-exception-levels)
 
-​	[3.1.3 AArch32 SVC](#3.1.3 aarch32-svc)
+​	[2.3.1 Exception Levels of ARM](#231-exception-levels-of-arm)
 
-​	[3.1.4 AArch64 SVC](#3.1.4 aarch64-svc)
+​	[2.3.2 Exception Levels of RISCV](#232-exception-levels-of-riscv)
 
-​	[3.1.5 AArch32 Interrupt](#3.1.5 aarch32-interrupt)
+​	[2.3.3 Exception Levels of MIPS](#233-exception-levels-of-mips)
 
-​	[3.1.6 AArch64 Interrupt](#3.1.6 aarch64-interrupt)
+[2.4 Multi-threading](#24-multi-threading)
 
-[3.2 Context Switch of RISCV](#3.2 context-switch-of-riscv)
+​	[2.4.1 Thread](#241-thread)
 
-​	[3.2.1 System Call](#3.2.1 system-call)
+​	[2.4.2 Process](#242-process)
 
-​	[3.2.2 Interrupt](#3.2.2 interrupt)
+​	[2.4.3 User thread](#243-user-thread)
 
-[3.3 Context Switch of MIPS](#3.3 context-switch-of-mips)
+​	[2.4.4 Kernel thread](#244-kernel-thread)
 
-​	[3.3.1 System Call](#3.3.1 system-call)
+​	[2.4.5 Thread ID](#245-thread-id)
 
-​	[3.3.2 Interrupt](#3.3.2 interrupt)
+​	[2.4.6 POSIX Thread ID](#246-posix-thread-id)
 
-------
+​	[2.4.7 Process ID](#247-process-id)
 
-[Chapter 4 MbedTEE Components](#chapter 4 - mbedtee-components)
+[2.5 Scheduler](#25-scheduler)
 
-[4.1 Overview](#4.1 overview)
+​	[2.5.1 SCHED_FIFO](#251-sched_fifo)
 
-[4.2 System Call](#4.2 system-call)
+​	[2.5.2 SCHED_RR](#252-sched_rr)
 
-[4.3 Heap Manager](#4.3 heap-manager)
+​	[2.5.3 SCHED_OTHER](#253-sched_other)
 
-[4.4 Page Manager](#4.4 page-manager)
+​	[2.5.4 Priority](#254-priority)
 
-[4.5 Timer Framework](#4.5 timer-framework)
-
-[4.6 Synchronization Primitives](#4.6 synchronization-primitives)
-
-[4.7 Tasklet](#4.7 tasklet)
-
-[4.8 Workqueue](#4.8 workqueue)
-
-[4.9 IPI](#4.9 ipi)
-
-[4.10 RPC](#4.10 rpc)
-
-[4.11 IPC](#4.11 ipc)
-
-[4.12 ELF Loader](#4.12 elf-loader)
-
-[4.13 MMU](#4.13 mmu)
-
-[4.14 File System](#4.14 file-system)
-
-​	[4.14.1 FS types](#4.14.1 fs-types)
-
-​	[4.14.2 FS Operations](#4.14.2 fs-operations)
-
-[4.15 Storage](#4.15 storage)
-
-​	[4.15.1 Transient](#4.15.1 transient)
-
-​	[4.15.2 Persistent](#4.15.2 persistent)
-
-[4.16 DTB](#4.16 DTB)
-
-[4.17 GlobalPlatform](#4.17 globalplatform)
+​	[2.6 Exception Handling](#26-exception-handling)
 
 ------
 
-[Chapter 5 TEE Security](#chapter 5 - tee-security)
+[Chapter 3 Context Switch](#chapter-3---context-switch)
 
-[5.1 Isolation](#5.1 isolation)
+[3.1 Context Switch of ARM](#31-context-switch-of-arm)
 
-​	[5.1.1 REE-TEE Isolation](#5.1.1 ree-tee-isolation)
+​	[3.1.1 REE SMC](#311-ree-smc)
 
-​	[5.1.2 User-Kernel Isolation](#5.1.2 user-kernel-isolation)
+​	[3.1.2 TEE SMC](#312-tee-smc)
 
-​	[5.1.3 TA Isolation](#5.1.3 ta-isolation)
+​	[3.1.3 AArch32 SVC](#313-aarch32-svc)
 
-[5.2 ELF Mapping](#5.2 elf-mapping)
+​	[3.1.4 AArch64 SVC](#314-aarch64-svc)
 
-[5.3 Timer](#5.3 timer)
+​	[3.1.5 AArch32 Interrupt](#315-aarch32-interrupt)
 
-​	[5.3.1 Overview](#5.3.1 overview)
+​	[3.1.6 AArch64 Interrupt](#316-aarch64-interrupt)
 
-​	[5.3.2 Monotonic Counter](#5.3.2 monotonic-counter)
+[3.2 Context Switch of RISCV](#32-context-switch-of-riscv)
 
-​	[5.3.3 Time Category](#5.3.3 time-category)
+​	[3.2.1 System Call](#321-system-call)
 
-[5.4 Debugging](#5.4 debugging)
+​	[3.2.2 Interrupt](#322-interrupt)
 
-[5.5 Access Control Policy](#5.5 access-control-policy)
+[3.3 Context Switch of MIPS](#33-context-switch-of-mips)
 
-[5.6 IPC Security](#5.6 ipc-security)
+​	[3.3.1 System Call](#331-system-call)
 
-​	[5.6.1 Message Queue](#5.6.1 message-queue)
+​	[3.3.2 Interrupt](#332-interrupt)
 
-​	[5.6.2 File descriptor sharing](#5.6.2 file-descriptor-sharing)
+------
 
-[5.7 RPC Security](#5.7 rpc-security)
+[Chapter 4 MbedTEE Components](#chapter-4---mbedtee-components)
 
-[5.8 Image Security](#5.8 image-security)
+[4.1 Overview](#41-overview)
+
+[4.2 System Call](#42-system-call)
+
+[4.3 Heap Manager](#43-heap-manager)
+
+[4.4 Page Manager](#44-page-manager)
+
+[4.5 Timer Framework](#45-timer-framework)
+
+[4.6 Synchronization Primitives](#46-synchronization-primitives)
+
+[4.7 Tasklet](#47-tasklet)
+
+[4.8 Workqueue](#48-workqueue)
+
+[4.9 IPI](#49-ipi)
+
+[4.10 RPC](#410-rpc)
+
+[4.11 IPC](#411-ipc)
+
+[4.12 ELF Loader](#412-elf-loader)
+
+[4.13 MMU](#413-mmu)
+
+[4.14 File System](#414-file-system)
+
+​	[4.14.1 FS types](#4141-fs-types)
+
+​	[4.14.2 FS Operations](#4142-fs-operations)
+
+[4.15 Storage](#415-storage)
+
+​	[4.15.1 Transient](#4151-transient)
+
+​	[4.15.2 Persistent](#4152-persistent)
+
+[4.16 DTB](#416-dtb)
+
+[4.17 GlobalPlatform](#417-globalplatform)
+
+------
+
+[Chapter 5 TEE Security](#chapter-5---tee-security)
+
+[5.1 Isolation](#51-isolation)
+
+​	[5.1.1 REE-TEE Isolation](#511-ree-tee-isolation)
+
+​	[5.1.2 User-Kernel Isolation](#512-user-kernel-isolation)
+
+​	[5.1.3 TA Isolation](#513-ta-isolation)
+
+[5.2 ELF Mapping](#52-elf-mapping)
+
+[5.3 Timer](#53-timer)
+
+​	[5.3.1 Overview](#531-overview)
+
+​	[5.3.2 Monotonic Counter](#532-monotonic-counter)
+
+​	[5.3.3 Time Category](#533-time-category)
+
+[5.4 Debugging](#54-debugging)
+
+[5.5 Access Control Policy](#55-access-control-policy)
+
+[5.6 IPC Security](#56-ipc-security)
+
+​	[5.6.1 Message Queue](#561-message-queue)
+
+​	[5.6.2 File descriptor sharing](#562-file-descriptor-sharing)
+
+[5.7 RPC Security](#57-rpc-security)
+
+[5.8 Image Security](#58-image-security)
 
 
 
@@ -337,98 +337,97 @@ Copyright © 2019 Kapa.XL All Rights Reserved**.**
 
 # List of figures
 
-[Figure 1‑1 ARM TrustZone Based Architecture](#Figure 1-1 ARM TrustZone Based Architecture)
+[Figure 1‑1 ARM TrustZone Based Architecture](#figure-1-1-arm-trustzone-based-architecture)
 
-[Figure 1‑2 FVP_VE_Cortex_A15x4 Processors](#Figure 1-2 FVP_VE_Cortex_A15x4 Processors)
+[Figure 1‑2 FVP_VE_Cortex_A15x4 Processors](#figure-1-2-fvp_ve_cortex_a15x4-processors)
 
-[Figure 1‑3 RISCV Based Architecture](#Figure 1-3 RISCV Based Architecture)
+[Figure 1‑3 RISCV Based Architecture](#figure-1-3-riscv-based-architecture)
 
-[Figure 1‑4 QEMU RISCV Processors](#_Figure 1-4 QEMU RISCV Processors)
+[Figure 1‑4 QEMU RISCV Processors](#figure-1-4-qemu-riscv-processors)
 
-[Figure 1‑5 MIPS32 Based Architecture](#_Figure 1-5 MIPS32 Based Architecture)
+[Figure 1‑5 MIPS32 Based Architecture](#figure-1-5-mips32-based-architecture)
 
-[Figure 2‑1 Client is from REE](#_Figure 2-1 Client is from REE)
+[Figure 2‑1 Client is from REE](#figure-2-1-client-is-from-ree)
 
-[Figure 2‑2 Client is another TA](#_Figure 2-2 Client is another TA)
+[Figure 2‑2 Client is another TA](#figure-2-2-client-is-another-ta)
 
-[Figure 2‑3 Processor 0 Initialization Flow](#_Figure 2-3 Processor 0 Initialization Flow)
+[Figure 2‑3 Processor 0 Initialization Flow](#figure-2-3-processor-0-initialization-flow)
 
-[Figure 2‑4 Secondary Processor Initialization Flow](#_Figure 2-4 Secondary Processor Initialization Flow)
+[Figure 2‑4 Secondary Processor Initialization Flow](#figure-2-4-secondary-processor-initialization-flow)
 
-[Figure 2‑5 Exception Levels of AArch32@ARMv7-A](#_Figure 2-5 Exception Levels of AArch32@ARMv7-A)
+[Figure 2‑5 Exception Levels of AArch32@ARMv7-A](#figure-2-5-exception-levels-of-aarch32armv7-a)
 
-[Figure 2‑6 Exception Levels of AArch64@ARMv8-A/ARMv9-A](#_Figure 2-6 Exception Levels of AArch64@ARMv8-A/ARMv9-A)
+[Figure 2‑6 Exception Levels of AArch64@ARMv8-A/ARMv9-A](#figure-2-6-exception-levels-of-aarch64armv8-aarmv9-a)
 
-[Figure 2‑7 Exception Levels of RISCV](#_Figure 2-7 Exception Levels of RISCV )
+[Figure 2‑7 Exception Levels of RISCV](#figure-2-7-exception-levels-of-riscv)
 
-[Figure 2‑8 Exception Levels of MIPS](#_Figure 2-8 Exception Levels of MIPS)
+[Figure 2‑8 Exception Levels of MIPS](#figure-2-8-exception-levels-of-mips)
 
-[Figure 3-1 Synchronous SMC Call - AArch32](#_Figure 3-1 Synchronous SMC Call - AArch32)
+[Figure 3-1 Synchronous SMC Call - AArch32](#figure-3-1-synchronous-smc-call---aarch32)
 
-[Figure 3‑2 Synchronous SMC Call – AArch64](#Figure 3-2 Synchronous SMC Call – AArch64)
+[Figure 3‑2 Synchronous SMC Call - AArch64](#figure-3-2-synchronous-smc-call---aarch64)
 
-[Figure 3‑3 Asynchronous SMC Call – AArch32](#_Figure 3-3 Asynchronous SMC Call – AArch32)
+[Figure 3‑3 Asynchronous SMC Call - AArch32](#figure-3-3-asynchronous-smc-call---aarch32)
 
-[Figure 3‑4 Asynchronous SMC Call – AArch64](#_Figure 3-4 Asynchronous SMC Call – AArch64)
+[Figure 3‑4 Asynchronous SMC Call - AArch64](#figure-3-4-asynchronous-smc-call---aarch64)
 
-[Figure 3‑5 System Call – AArch32](#_Figure 3-5 System Call – AArch32)
+[Figure 3‑5 System Call – AArch32](#figure-3-5-system-call---aarch32)
 
-[Figure 3‑6 System Call – AArch64](#_Figure 3-6 System Call – AArch64)
+[Figure 3‑6 System Call – AArch64](#figure-3-6-system-call---aarch64)
 
-[Figure 3‑7 FIQ Interrupts the REE - AArch32](#_Figure 3-7 FIQ Interrupts the REE - AArch32)
+[Figure 3‑7 FIQ Interrupts the REE - AArch32](#figure-3-7-fiq-interrupts-the-ree---aarch32)
 
-[Figure 3‑8 FIQ Interrupts the REE (Scheduled) - AArch32](#_Figure 3-8 FIQ Interrupts the REE (Scheduled) - AArch32)
+[Figure 3‑8 FIQ Interrupts the REE (Scheduled) - AArch32](#figure-3-8-fiq-interrupts-the-ree-scheduled---aarch32)
 
-[Figure 3‑9 FIQ - AArch32](#_Figure 3-9 FIQ - AArch32)
+[Figure 3‑9 FIQ - AArch32](#figure-3-9-fiq---aarch32)
 
-[Figure 3‑10 MbedTEE Forwards IRQ to REE - AArch32](#_Figure 3-10 MbedTEE Forwards IRQ to REE - AArch32)
+[Figure 3‑10 MbedTEE Forwards IRQ to REE - AArch32](#figure-3-10-mbedtee-forwards-irq-to-ree---aarch32)
 
-[Figure 3‑11 TEE IRQ Interrupts the REE - AArch64](#_Figure 3-11 TEE IRQ Interrupts the REE - AArch64)
+[Figure 3‑11 TEE IRQ Interrupts the REE - AArch64](#figure-3-11-tee-irq-interrupts-the-ree---aarch64)
 
-[Figure 3‑12 TEE IRQ Interrupts the REE (Scheduled) - AArch64](#_Figure 3-12 TEE IRQ Interrupts the REE (Scheduled) - AArch64)
+[Figure 3‑12 TEE IRQ Interrupts the REE (Scheduled) - AArch64](#figure-3-12-tee-irq-interrupts-the-ree-scheduled---aarch64)
 
-[Figure 3‑13 REE IRQ Interrupts the TEE - AArch64](#_Figure 3-13 REE IRQ Interrupts the TEE - AArch64)
+[Figure 3‑13 REE IRQ Interrupts the TEE - AArch64](#figure-3-13-ree-irq-interrupts-the-tee---aarch64)
 
-[Figure 3‑14 TEE IRQ - AArch64](#_Figure 3-14 TEE IRQ - AArch64)
+[Figure 3‑14 TEE IRQ - AArch64](#figure-3-14-tee-irq---aarch64)
 
-[Figure 3‑15 System Call - RISCV](#_Figure 3-15 System Call - RISCV)
+[Figure 3‑15 System Call - RISCV](#figure-3-15-system-call---riscv)
 
-[Figure 3‑16 Interrupt – RISCV](#_Figure 3-16 Interrupt - RISCV)
+[Figure 3‑16 Interrupt – RISCV](#figure-3-16-interrupt---riscv)
 
-[Figure 3‑17 System Call - MIPS](#_Figure 3-17 System Call - MIPS)
+[Figure 3‑17 System Call - MIPS](#figure-3-17-system-call---mips)
 
-[Figure 3‑18 Interrupt - MIPS](#_Figure 3-18 Interrupt - MIPS)
+[Figure 3‑18 Interrupt - MIPS](#figure-3-18-interrupt---mips)
 
-[Figure 4‑1 MbedTEE Components](#_Figure 4-1 MbedTEE Components)
+[Figure 4‑1 MbedTEE Components](#figure-4-1-mbedtee-components)
 
-[Figure 4‑2 Persistent storage based on reefs](#_Figure 4-2 Persistent storage based on reefs)
+[Figure 4‑2 Persistent storage based on reefs](#figure-4-2-persistent-storage-based-on-reefs)
 
-[Figure 5‑1 AArch32 Address Space](#_Figure 5-1 AArch32 Address Space)
+[Figure 5‑1 AArch32 Address Space](#figure-5-1-aarch32-address-space)
 
-[Figure 5‑2 AArch64 Address Space](#_Figure 5-2 AArch64 Address Space)
+[Figure 5‑2 AArch64 Address Space](#figure-5-2-aarch64-address-space)
 
-[Figure 5‑3 RISCV32 SV32 Address Space](#_Figure 5-3 RISCV32 SV32 Address Space)
+[Figure 5‑3 RISCV32 SV32 Address Space](#figure-5-3-riscv32-sv32-address-space)
 
-[Figure 5‑4 RISCV64 SV39 Address Space](#_Figure 5-4 RISCV64 SV39 Address Space)
+[Figure 5‑4 RISCV64 SV39 Address Space](#figure-5-4-riscv64-sv39-address-space)
 
-[Figure 5‑5 MIPS32 Address Space](#_Figure 5-5 MIPS32 Address Space)
+[Figure 5‑5 MIPS32 Address Space](#figure-5-5-mips32-address-space)
 
-[Figure 5‑6 PS information](#_Figure 5-6 PS information)
+[Figure 5‑6 PS information](#figure-5-6-ps-information)
 
 # List of tables
 
-[Table 1‑1 OS information - ARM](#_Table 1‑1 OS information - ARM)
+[Table 1‑1 OS information - ARM](#table-1-1-os-information---arm)
 
-[Table 1‑2 Communication Method - ARM](#_Table 1‑2 Communication Method - ARM)
+[Table 1‑2 Communication Method - ARM](#table-1-2-communication-method---arm)
 
-[Table 1‑3 OS information – RISCV](#_Table 1‑3 OS information – RISCV)
+[Table 1‑3 OS information - RISCV](#table-1-3-os-information---riscv)
 
-[Table 1‑4 Communication Method - RISCV](#_Table 1‑4 Communication Method - RISCV)
+[Table 1‑4 Communication Method - RISCV](#table-1-4-communication-method---riscv)
 
-[Table 5‑1 Kernel ELF Segments](#_Table 5‑1 Kernel ELF Segments)
+[Table 5‑1 Kernel ELF Segments](#table-5-1-kernel-elf-segments)
 
-[Table 5‑2 TA ELF Segments](#_Table 5‑2 TA ELF Segments)
-
+[Table 5‑2 TA ELF Segments](#table-5-2-ta-elf-segments)
 
 
 <div STYLE="page-break-after: always;"></div>
@@ -479,20 +478,20 @@ The following figure takes the ARM FVP_VE_Cortex_A15x4 as an example, this SoC i
 
 Seen from the above hardware architectures, ARM SoC supports below software architecture with TEE. Table 1‑1 illustrates the OS information.
 
-<center><h6>Table 1‑1 OS information - ARM</h6></center>
+<center><h6>Table 1-1 OS information - ARM</h6></center>
 
 | Rich Execution Environment | Trusted Execution Environment |
-|:--------------------------:|:-----------------------------:|
+| :------------------------: | :---------------------------: |
 |  ARM Non-Trusted (Linux)   |     ARM Trusted (TEE OS)      |
 
 
 
 Table 1‑2 illustrates the communication method between different execution environments.												
 
-<center><h6>Table 1‑2 Communication Method - ARM</h6></center>
+<center><h6>Table 1-2 Communication Method - ARM</h6></center>
 
 |          |  REE to TEE   |  TEE to REE   |
-|:--------:|:-------------:|:-------------:|
+| :------: | :-----------: | :-----------: |
 |   Data   | Shared memory | Shared memory |
 | Commands |      SMC      |   IPI (SGI)   |
 
@@ -516,18 +515,18 @@ The following figure takes the RISCV32/RISCV64 QEMU virtual platform as an examp
 
 Seen from the above hardware architectures, RISCV virtual platform supports below software architecture with TEE. Table 1‑3 illustrates the OS information.
 
-<center><h6>Table 1‑3 OS information – RISCV</h6></center>
+<center><h6>Table 1-3 OS information - RISCV</h6></center>
 
 |  Rich Execution Environment  | Trusted Execution Environment |
-|:----------------------------:|:-----------------------------:|
+| :--------------------------: | :---------------------------: |
 | REE Processors (4~7) (Linux) | TEE Processors (0~3) (TEE OS) |
 
 Table 1‑4 illustrates the communication method between different execution environments.
 
-<center><h6>Table 1‑4 Communication Method - RISCV</h6></center>
+<center><h6>Table 1-4 Communication Method - RISCV</h6></center>
 
 |          |  REE to TEE   |  TEE to REE   |
-|:--------:|:-------------:|:-------------:|
+| :------: | :-----------: | :-----------: |
 |   Data   | Shared memory | Shared memory |
 | Commands |     SSWI      |     SSWI      |
 
@@ -797,7 +796,7 @@ The AArch64 synchronous call is different with AArch32, AArch64 monitor delegate
 
 
 
-<center><h6>Figure 3-2 Synchronous SMC Call – AArch64</h6></center>
+<center><h6>Figure 3-2 Synchronous SMC Call - AArch64</h6></center>
 
 #### Asynchronous Call
 
@@ -807,13 +806,13 @@ The asynchronous call is used for handling long time request which may lead Mbed
 
 ![](media-arch/image17.png)
 
-<center><h6>Figure 3-3 Asynchronous SMC Call – AArch32</h6></center>
+<center><h6>Figure 3-3 Asynchronous SMC Call - AArch32</h6></center>
 
 **For the AArch64 SMC:**
 
 ![](media-arch/image18.png)
 
-<center><h6>Figure 3-4 Asynchronous SMC Call – AArch64</h6></center>
+<center><h6>Figure 3-4 Asynchronous SMC Call - AArch64</h6></center>
 
 ### 3.1.2 TEE SMC
 
@@ -827,7 +826,7 @@ AArch32 SVC is the software generated supervisor call to request the kernel serv
 
 
 
-<center><h6>Figure 3-5 System Call – AArch32</h6></center>
+<center><h6>Figure 3-5 System Call - AArch32</h6></center>
 
 ### 3.1.4 AArch64 SVC
 
@@ -835,7 +834,7 @@ AArch64 SVC is the software generated supervisor call to request the kernel serv
 
 ![](media-arch/image20.png)
 
-<center><h6>Figure 3-6 System Call – AArch64</h6></center>
+<center><h6>Figure 3-6 System Call - AArch64</h6></center>
 
 ### 3.1.5 AArch32 Interrupt
 
@@ -1399,10 +1398,10 @@ According to the previous sections, the processor provides non-privileged and pr
 
 MbedTEE kernel has multiple sections in the ELF binary, and each section has its own MMU mapping flag. With these flags, MbedTEE kernel can easily protect the “.text” and “.rodata” sections from software modification by the processor, but it still can’t prevent the malicious overwrite from the hardware DMA.
 
-<center><h6>Table 5‑1 Kernel ELF Segments</h6></center>
+<center><h6>Table 5-1 Kernel ELF Segments</h6></center>
 
 | Item    | RW/RO | Exec/non-exec  |
-|---------|-------|----------------|
+| ------- | ----- | -------------- |
 | .text   | RO    | Executable     |
 | .rodata | RO    | Non-Executable |
 | .init   | RO    | Executable     |
@@ -1414,10 +1413,10 @@ The TA also has multiple ELF sections and each section has its own MMU mapping t
 
 According to the ELF LOAD flags in the program header, the TA is always mapped as follow. Generally, each TA has two LOAD segments, one is for the read-only but executable sections, the other one is for the read-write by non-executable sections.
 
-<center><h6>Table 5‑2 TA ELF Segments</h6></center>
+<center><h6>Table 5-2 TA ELF Segments</h6></center>
 
 | Item     | RW/RO | Exec/non-exec  |
-|----------|-------|----------------|
+| -------- | ----- | -------------- |
 | .hash    | RO    | Executable     |
 | .dynsym  | RO    | Executable     |
 | .dynstr  | RO    | Executable     |

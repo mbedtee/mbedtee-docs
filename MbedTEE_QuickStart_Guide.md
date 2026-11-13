@@ -1024,7 +1024,7 @@ In general, you can add your own trusted applications by referencing the **mbedt
     path = "/user/mbedtee-helloworld-ta.o";
     version = "1.0.0";
     stack_size = "8192";
-    heap_size = "1048576";
+    mem_quota = "1048576";
     single_instance = "1";
     multi_session = "1";
     dev_access = "/dev/uart0, /dev/uart1, /dev/urandom, /dev/globalplatform";

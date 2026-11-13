@@ -1787,7 +1787,7 @@ version = "1.0.1";
 
 stack_size = "8192";
 
-heap_size = "1048576";
+mem_quota = "1048576";
 
 single_instance = "1";
 

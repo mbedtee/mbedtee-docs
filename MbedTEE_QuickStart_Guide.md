@@ -119,7 +119,7 @@ Enter the **buildroot** folder (**mbedtee-build/buildroot**), and issue the comm
 
 <div STYLE="page-break-after: always;"></div>
 
-#  Build and Run @ QEMU
+# Build and Run @ QEMU
 
 ## Prepare the buildroot
 
@@ -208,8 +208,6 @@ make -j8 && make install
 >
 > "make clean" is required before switching to another target.
 
-
-
 ### AArch64 (REE+TEE)
 
 Config/Make: make clean && make mbedtee_qemu_virt_aarch64_defconfig && make
@@ -244,8 +242,6 @@ Config/Make: make clean && make mbedtee_vexpress_ca15_defconfig && make
 xterm -geometry 128x32 -e "telnet 127.0.0.1 5555" & xterm -geometry 128x32 -e "telnet 127.0.0.1 5556" &  xterm -geometry 128x32 -e "telnet 127.0.0.1 5557" & ../qemu/build/qemu-system-arm -M vexpress-a15 -cpu cortex-a15 -smp 4 -m 2G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,file=output/images/linux.dtb,addr=0x85F00000,force-raw=on -device loader,file=output/images/Image,addr=0x86008000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -serial telnet::5555,server,nowait -serial telnet::5556,server,nowait -serial telnet::5557,server,nowait
 ```
 
-
-
 ### AArch64 (REE+TEE with eMMC/RPMB)
 
 Config/Make: make clean && make mbedtee_qemu_virt_aarch64_emmc_defconfig && make
@@ -254,15 +250,25 @@ QEMU virt AArch64 targets: -M virt -cpu cortex-a35/cortex-a53/cortex-a55/cortex-
 
 Run with eMMC enabled @ REE side, RPMB enabled @ TEE side.
 
+The defconfig runs two post-image scripts: `tee/linux/post-image.sh` builds
+`output/images/emmc.img` from the rootfs, and `tee/post-image.sh` builds
+`output/images/data.img`, a 16 MB volume that QEMU attaches as a virtio-blk
+disk and the TEE formats and mounts at `/cblk0`. A build with
+`CONFIG_BLK_CRYPTO` only takes a device that holds nothing at all -- the
+host has no key -- so the TEE writes the file system itself on the first
+boot: FAT16 at the default size, FAT32 once the volume is larger than
+512 MB (`DATA_SIZE_KB=614400 make`). The mount point is the name of the
+device the TEE sees: `/cblk0` is the encrypted device built on `blk0`,
+without `CONFIG_BLK_CRYPTO` the same volume is mounted at `/blk0`, and every
+disk behind it takes the next index (`/cblk1`, `/cblk2`, ...).
+
 > [!NOTE]
 >
 > Current QEMU does not support RPMB batch write, so please "make mbedtee-os-menuconfig" to set the batch-write-number to 1.
 
 ```
-xterm -geometry 128x32 -e "telnet localhost 5556" & xterm -geometry 128x32 -e "telnet localhost 5555"& ../qemu/build/qemu-system-aarch64 -M virt -M secure=on,gic-version=3,virtualization=on -cpu cortex-a710 -smp 4 -m 4096 -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,file=output/images/linux.dtb,addr=0x85F00000,force-raw=on  -device loader,file=output/images/Image,addr=0x86000000,force-raw=on  -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -drive file=output/images/emmc.img,if=none,format=raw,id=emmc-img -device sdhci-pci -device emmc,boot-partition-size=1048576,rpmb-partition-size=1048576,drive=emmc-img -serial telnet::5555,server,nowait -serial telnet::5556,server,nowait
+xterm -geometry 128x32 -e "telnet localhost 5556" & xterm -geometry 128x32 -e "telnet localhost 5555"& ../qemu/build/qemu-system-aarch64 -M virt -M secure=on,gic-version=3,virtualization=on -cpu cortex-a710 -smp 4 -m 4096 -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,file=output/images/linux.dtb,addr=0x85F00000,force-raw=on  -device loader,file=output/images/Image,addr=0x86000000,force-raw=on  -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -drive file=output/images/emmc.img,if=none,format=raw,id=emmc-img -device sdhci-pci -device emmc,boot-partition-size=1048576,rpmb-partition-size=1048576,drive=emmc-img -drive file=output/images/data.img,if=none,format=raw,id=vblk0 -device virtio-blk-device,bus=virtio-mmio-bus.31,drive=vblk0 -device virtio-rng-device,bus=virtio-mmio-bus.30 -serial telnet::5555,server,nowait -serial telnet::5556,server,nowait
 ```
-
-
 
 ### AArch32 (REE+TEE with eMMC/RPMB)
 
@@ -272,25 +278,33 @@ QEMU virt AArch32 targets: -M virt -cpu cortex-a15 or cortex-a7
 
 Run with eMMC enabled @ REE side, RPMB enabled @ TEE side.
 
+The defconfig runs two post-image scripts: `tee/linux/post-image.sh` builds
+`output/images/emmc.img` from the rootfs, and `tee/post-image.sh` builds
+`output/images/data.img`, a 16 MB volume that QEMU attaches as a virtio-blk
+disk and the TEE formats and mounts at `/cblk0`. A build with
+`CONFIG_BLK_CRYPTO` only takes a device that holds nothing at all -- the
+host has no key -- so the TEE writes the file system itself on the first
+boot: FAT16 at the default size, FAT32 once the volume is larger than
+512 MB (`DATA_SIZE_KB=614400 make`). The mount point is the name of the
+device the TEE sees: `/cblk0` is the encrypted device built on `blk0`,
+without `CONFIG_BLK_CRYPTO` the same volume is mounted at `/blk0`, and every
+disk behind it takes the next index (`/cblk1`, `/cblk2`, ...).
+
 > [!NOTE]
 >
 > Current QEMU does not support RPMB batch write, so please "make mbedtee-os-menuconfig" to set the batch-write-number to 1.
 
 ```
-xterm -geometry 128x32 -e "telnet localhost 5555" & xterm -geometry 128x32 -e "telnet localhost 5556"&  ../qemu/build/qemu-system-arm -M virt -M secure=on -cpu cortex-a15 -smp 4 -m 2048 -M highmem=on -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,file=output/images/linux.dtb,addr=0x85F00000,force-raw=on  -device loader,file=output/images/Image,addr=0x86008000,force-raw=on  -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -drive file=output/images/emmc.img,if=none,format=raw,id=emmc-img -device sdhci-pci -device emmc,boot-partition-size=1048576,rpmb-partition-size=1048576,drive=emmc-img -serial telnet::5555,server,nowait -serial telnet::5556,server,nowait
+xterm -geometry 128x32 -e "telnet localhost 5555" & xterm -geometry 128x32 -e "telnet localhost 5556"&  ../qemu/build/qemu-system-arm -M virt -M secure=on -cpu cortex-a15 -smp 4 -m 2048 -M highmem=on -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,file=output/images/linux.dtb,addr=0x85F00000,force-raw=on  -device loader,file=output/images/Image,addr=0x86008000,force-raw=on  -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -drive file=output/images/emmc.img,if=none,format=raw,id=emmc-img -device sdhci-pci -device emmc,boot-partition-size=1048576,rpmb-partition-size=1048576,drive=emmc-img -drive file=output/images/data.img,if=none,format=raw,id=vblk0 -device virtio-blk-device,bus=virtio-mmio-bus.31,drive=vblk0 -device virtio-rng-device,bus=virtio-mmio-bus.30 -serial telnet::5555,server,nowait -serial telnet::5556,server,nowait
 ```
-
-
 
 ### RISCV64 (TEE only)
 
 Config/Make: make clean && make mbedtee_qemu_virt_riscv64_defconfig && make
 
 ```
-../qemu/build/qemu-system-riscv64 -M virt -smp 4 -m 8G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -M aclint=on -serial stdio
+../qemu/build/qemu-system-riscv64 -M virt -smp 4 -m 8G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -M aclint=on -drive file=output/images/data.img,if=none,format=raw,id=vblk0 -device virtio-blk-device,bus=virtio-mmio-bus.0,drive=vblk0 -device virtio-rng-device,bus=virtio-mmio-bus.1 -serial stdio
 ```
-
-
 
 ### RISCV64-APLIC (TEE only)
 
@@ -302,8 +316,6 @@ Config/Make: make clean && make mbedtee_qemu_virt_riscv64_aplic_defconfig && mak
 ../qemu/build/qemu-system-riscv64 -M virt,aia=aplic,aclint=on -smp 4 -m 4G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -serial stdio
 ```
 
-
-
 ### RISCV64 T-Head C906 (TEE only)
 
 Run with T-Head XuanTie C906 single-core CPU (RV64GCV, xtheadcmo cache ops, PLIC).
@@ -314,17 +326,13 @@ Config/Make: make clean && make mbedtee_qemu_virt_riscv64_thead_c906_defconfig &
 ../qemu/build/qemu-system-riscv64 -M virt -cpu thead-c906 -smp 1 -m 4G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -M aclint=on -serial stdio
 ```
 
-
-
 ### RISCV32 (TEE only)
 
 Config/Make: make clean && make mbedtee_qemu_virt_riscv32_defconfig && make
 
 ```
-../qemu/build/qemu-system-riscv32 -M virt,aclint=on -smp 4 -m 2G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -serial stdio
+../qemu/build/qemu-system-riscv32 -M virt,aclint=on -smp 4 -m 2G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -drive file=output/images/data.img,if=none,format=raw,id=vblk0 -device virtio-blk-device,bus=virtio-mmio-bus.0,drive=vblk0 -device virtio-rng-device,bus=virtio-mmio-bus.1 -serial stdio
 ```
-
-
 
 ### SifiveUnleashed RISCV32 (TEE only)
 
@@ -334,8 +342,6 @@ Config/Make: make clean && make mbedtee_qemu_sifive_u_riscv32_defconfig && make
 ../qemu/build/qemu-system-riscv32 -M sifive_u -smp 5 -m 2G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -device loader,addr=0x80000000,cpu-num=4 -serial stdio
 ```
 
-
-
 ### SifiveUnleashed RISCV64  (TEE only)
 
 Config/Make: make clean && make mbedtee_qemu_sifive_u_riscv64_defconfig && make
@@ -343,8 +349,6 @@ Config/Make: make clean && make mbedtee_qemu_sifive_u_riscv64_defconfig && make
 ```
 ../qemu/build/qemu-system-riscv64 -M sifive_u -smp 5 -m 4G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -device loader,addr=0x80000000,cpu-num=4 -serial stdio
 ```
-
-
 
 ### Andes AE350 RISCV32 (TEE only)
 
@@ -356,8 +360,6 @@ Config/Make: make clean && make mbedtee_qemu_andes_ae350_riscv32_defconfig && ma
 ../andes-qemu/build/qemu-system-riscv32 -M andes_ae350 -cpu andes-a45 -smp 4 -m 2G -bios none -device loader,file=output/images/mbedtee.bin,addr=0x0,force-raw=on -serial null -serial stdio
 ```
 
-
-
 ### Andes AE350 RISCV32-IMSIC (TEE only)
 
 Run with APLIC-IMSIC interrupt controller.
@@ -367,8 +369,6 @@ Config/Make: make clean && make mbedtee_qemu_andes_ae350_riscv32_imsic_defconfig
 ```
 ../andes-qemu/build/qemu-system-riscv32 -M andes_ae350,aia=aplic-imsic -cpu andes-a45 -smp 4 -m 2G -bios none -device loader,file=output/images/mbedtee.bin,addr=0x0,force-raw=on -serial null -serial stdio
 ```
-
-
 
 ### Andes AE350 RISCV64 (TEE only)
 
@@ -380,8 +380,6 @@ Config/Make: make clean && make mbedtee_qemu_andes_ae350_riscv64_defconfig && ma
 ../andes-qemu/build/qemu-system-riscv64 -M andes_ae350 -cpu andes-ax45 -smp 4 -m 2G -bios none -device loader,file=output/images/mbedtee.bin,addr=0x0,force-raw=on -serial null -serial stdio
 ```
 
-
-
 ### Andes AE350 RISCV64-IMSIC (TEE only)
 
 Run with APLIC-IMSIC interrupt controller.
@@ -391,8 +389,6 @@ Config/Make: make clean && make mbedtee_qemu_andes_ae350_riscv64_imsic_defconfig
 ```
 ../andes-qemu/build/qemu-system-riscv64 -M andes_ae350,aia=aplic-imsic -cpu andes-ax45 -smp 4 -m 2G -bios none -device loader,file=output/images/mbedtee.bin,addr=0x0,force-raw=on -serial null -serial stdio
 ```
-
-
 
 ### Andes AE350 RISCV32-IMSIC (REE+TEE)
 
@@ -404,8 +400,6 @@ Config/Make: make clean && make mbedtee_qemu_andes_ae350_riscv32_imsic_linux_def
 ../andes-qemu/build/qemu-system-riscv32 -M andes_ae350,aia=aplic-imsic -cpu andes-a45 -smp 4 -m 2G -bios none -device loader,file=output/images/fw_jump.bin,addr=0x6000000,force-raw=on -device loader,file=output/images/Image,addr=0x6400000,force-raw=on -device loader,file=output/images/mbedtee.bin,addr=0x400000,force-raw=on -device loader,addr=0x400000,cpu-num=0 -device loader,addr=0x400000,cpu-num=1 -device loader,addr=0x6000000,cpu-num=2 -device loader,addr=0x6000000,cpu-num=3 -serial null -serial stdio
 ```
 
-
-
 ### Andes AE350 RISCV64-IMSIC (REE+TEE)
 
 Run with '-smp 8', 4 cores for LinuxREE, 4 cores for MbedTEE. APLIC MSI mode.
@@ -416,8 +410,6 @@ Config/Make: make clean && make mbedtee_qemu_andes_ae350_riscv64_imsic_linux_def
 ../andes-qemu/build/qemu-system-riscv64 -M andes_ae350,aia=aplic-imsic -cpu andes-ax45 -smp 8 -m 2G -bios none -device loader,file=output/images/fw_jump.bin,addr=0x6000000,force-raw=on -device loader,file=output/images/Image,addr=0x6200000,force-raw=on -device loader,file=output/images/mbedtee.bin,addr=0x200000,force-raw=on -device loader,addr=0x200000,cpu-num=0 -device loader,addr=0x200000,cpu-num=1 -device loader,addr=0x200000,cpu-num=2 -device loader,addr=0x200000,cpu-num=3 -device loader,addr=0x6000000,cpu-num=4 -device loader,addr=0x6000000,cpu-num=5 -device loader,addr=0x6000000,cpu-num=6 -device loader,addr=0x6000000,cpu-num=7 -serial null -serial stdio
 ```
 
-
-
 ### Malta MIPS32 (TEE only)
 
 QEMU malta mips32r2 targets:  -cpu 24Kf 24Kc 34Kf 74Kf M14Kc P5600
@@ -425,10 +417,8 @@ QEMU malta mips32r2 targets:  -cpu 24Kf 24Kc 34Kf 74Kf M14Kc P5600
 Config/Make: make clean && make mbedtee_qemu_malta_mips32r2_defconfig && make
 
 ```
-../qemu/build/qemu-system-mipsel -M malta -m 1G -cpu 74Kf -kernel output/images/mbedtee.elf -serial stdio
+../qemu/build/qemu-system-mipsel -M malta -m 256 -cpu 74Kf -kernel output/images/mbedtee.elf -serial stdio
 ```
-
-
 
 ### ASpeed AST2600 (REE+TEE)
 
@@ -437,8 +427,6 @@ Config/Make: make clean && make mbedtee_qemu_ast2600_defconfig && make
 ```
 ../qemu/build/qemu-system-arm -M ast2600-evb -smp 2 -m 2G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,file=output/images/linux.dtb,addr=0x85F00000,force-raw=on -device loader,file=output/images/Image,addr=0x86008000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -serial stdio
 ```
-
-
 
 ### ASpeed AST2700 (REE+TEE)
 
@@ -466,8 +454,6 @@ Config/Make: make clean && make mbedtee_qemu_ast2700_defconfig && make CONFIG_AR
 ../qemu/build/qemu-system-aarch64 -M ast2700-evb -smp 4 -m 2G -device loader,file=output/images/mbedtee.bin,addr=0x400000000,force-raw=on -device loader,file=output/images/linux.dtb,addr=0x415F00000,force-raw=on -device loader,file=output/images/Image,addr=0x420000000,force-raw=on -device loader,addr=0x400000000,cpu-num=0 -device loader,addr=0x400000000,cpu-num=1 -device loader,addr=0x400000000,cpu-num=2 -device loader,addr=0x400000000,cpu-num=3 -serial stdio
 ```
 
-
-
 ### Raspberry raspi4b (REE+TEE)
 
 Config/Make: make clean && make mbedtee_qemu_raspi4b_defconfig && make
@@ -484,8 +470,6 @@ Config/Make: make clean && make mbedtee_qemu_raspi4b_defconfig && make
 gnome-terminal -e "telnet 127.0.0.1 5555" --tab -t "LinuxREE"& gnome-terminal -e "telnet 127.0.0.1 5556" --tab -t "MbedTEE"& ../qemu/build/qemu-system-aarch64 -M raspi4b -smp 4 -m 2G -device loader,file=output/images/mbedtee.bin,addr=0x00200000,force-raw=on -device loader,file=output/images/linux.dtb,addr=0x05F00000,force-raw=on -device loader,file=output/images/Image,addr=0x06000000,force-raw=on -device loader,addr=0x00200000,cpu-num=0 -device loader,addr=0x00200000,cpu-num=1 -device loader,addr=0x00200000,cpu-num=2 -device loader,addr=0x00200000,cpu-num=3 -serial telnet::5555,server,nowait -serial telnet::5556,server,nowait
 ```
 
-
-
 ### Xilinx xlnx-versal-virt (REE+TEE)
 
 Config/Make: make clean && make mbedtee_qemu_xlnx_versal_virt_defconfig && make
@@ -493,8 +477,6 @@ Config/Make: make clean && make mbedtee_qemu_xlnx_versal_virt_defconfig && make
 ```
 gnome-terminal -e "telnet 127.0.0.1 5555" --tab -t "LinuxREE"& gnome-terminal -e "telnet 127.0.0.1 5556" --tab -t "MbedTEE"& ../qemu/build/qemu-system-aarch64 -M xlnx-versal-virt -m 2G -device loader,file=output/images/mbedtee.bin,addr=0x00200000,force-raw=on -device loader,file=output/images/linux.dtb,addr=0x05F00000,force-raw=on -device loader,file=output/images/Image,addr=0x06000000,force-raw=on -device loader,addr=0x00200000,cpu-num=0 -device loader,addr=0x00200000,cpu-num=1 -serial telnet::5555,server,nowait -serial telnet::5556,server,nowait
 ```
-
-
 
 ### Xilinx xlnx-zcu102 (REE+TEE)
 
@@ -504,8 +486,6 @@ Config/Make: make clean && make mbedtee_qemu_xlnx_zcu102_defconfig && make
 gnome-terminal -e "telnet 127.0.0.1 5555" --tab -t "LinuxREE"& gnome-terminal -e "telnet 127.0.0.1 5556" --tab -t "MbedTEE"& ../qemu/build/qemu-system-aarch64 -M xlnx-zcu102 -M secure=on,virtualization=on -m 2G -device loader,file=output/images/mbedtee.bin,addr=0x00200000,force-raw=on -device loader,file=output/images/linux.dtb,addr=0x05F00000,force-raw=on -device loader,file=output/images/Image,addr=0x06000000,force-raw=on -device loader,addr=0x00200000,cpu-num=0 -device loader,addr=0x00200000,cpu-num=1 -device loader,addr=0x00200000,cpu-num=2 -device loader,addr=0x00200000,cpu-num=3 -serial telnet::5555,server,nowait -serial telnet::5556,server,nowait
 ```
 
-
-
 ### NXP imx7d (REE+TEE)
 
 Config/Make: make clean && make mbedtee_qemu_imx7d_defconfig && make
@@ -513,8 +493,6 @@ Config/Make: make clean && make mbedtee_qemu_imx7d_defconfig && make
 ```
 gnome-terminal -e "telnet 127.0.0.1 5555" --tab -t "LinuxREE"& gnome-terminal -e "telnet 127.0.0.1 5556" --tab -t "MbedTEE"& ../qemu/build/qemu-system-arm -M mcimx7d-sabre -smp 2 -m 2G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,file=output/images/linux.dtb,addr=0x85F00000,force-raw=on  -device loader,file=output/images/Image,addr=0x86008000,force-raw=on  -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -serial telnet::5555,server,nowait -serial telnet::5556,server,nowait
 ```
-
-
 
 ### RISCV64-IMSIC (REE+TEE)
 
@@ -526,8 +504,6 @@ Config/Make: make clean && make mbedtee_qemu_virt_riscv64_imsic_linux_defconfig 
 ../qemu/build/qemu-system-riscv64 -M virt -smp 8 -m 8G -device loader,file=output/images/fw_jump.bin,addr=0x86000000,force-raw=on -device loader,file=output/images/Image,addr=0x86200000,force-raw=on -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -device loader,addr=0x86000000,cpu-num=4 -device loader,addr=0x86000000,cpu-num=5 -device loader,addr=0x86000000,cpu-num=6 -device loader,addr=0x86000000,cpu-num=7 -M aia=aplic-imsic -serial stdio
 ```
 
-
-
 ### RISCV32-IMSIC (REE+TEE)
 
 Run with '-smp 4', 2 cores for LinuxREE, 2 cores for MbedTEE. APLIC MSI mode.
@@ -538,8 +514,6 @@ Config/Make: make clean && make mbedtee_qemu_virt_riscv32_imsic_linux_defconfig 
 ../qemu/build/qemu-system-riscv32 -M virt -smp 4 -m 2G -device loader,file=output/images/fw_jump.bin,addr=0x86000000,force-raw=on -device loader,file=output/images/Image,addr=0x86400000,force-raw=on -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x86000000,cpu-num=2 -device loader,addr=0x86000000,cpu-num=3 -M aia=aplic-imsic -nographic
 ```
 
-
-
 ### Xiangshan-KMH (REE+TEE)
 
 Run with '-smp 16' RISCV64, 12 cores for LinuxREE, 4 cores for MbedTEE. APLIC MSI mode.
@@ -549,8 +523,6 @@ Config/Make: make clean && make mbedtee_qemu_xiangshan_kmh_linux_defconfig && ma
 ```
 ../qemu/build/qemu-system-riscv64 -M xiangshan-kunminghu -smp 16 -m 8G -device loader,file=output/images/fw_jump.bin,addr=0x86000000,force-raw=on -device loader,file=output/images/Image,addr=0x86200000,force-raw=on -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -device loader,addr=0x86000000,cpu-num=4 -device loader,addr=0x86000000,cpu-num=5 -device loader,addr=0x86000000,cpu-num=6 -device loader,addr=0x86000000,cpu-num=7 -device loader,addr=0x86000000,cpu-num=8 -device loader,addr=0x86000000,cpu-num=9 -device loader,addr=0x86000000,cpu-num=10 -device loader,addr=0x86000000,cpu-num=11 -device loader,addr=0x86000000,cpu-num=12 -device loader,addr=0x86000000,cpu-num=13 -device loader,addr=0x86000000,cpu-num=14 -device loader,addr=0x86000000,cpu-num=15 -serial stdio
 ```
-
-
 
 ### Microblaze-V (TEE only)
 
@@ -582,7 +554,7 @@ RISCV32: make clean && make mbedtee_qemu_microblaze_v_riscv32_defconfig && make
 
 <div STYLE="page-break-after: always;"></div>
 
-#  Build and Run @ FastModel
+# Build and Run @ FastModel
 
 ## Prepare the buildroot
 
@@ -673,8 +645,6 @@ kapa@ubuntu24:~/mbedtee-build/buildroot$ tree configs/ | grep mbedtee_vexpress
 
    - Other targets can be built in the similar way.
 
-
-
 ## Run the targets @ FastModel
 
 > [!IMPORTANT]
@@ -682,8 +652,6 @@ kapa@ubuntu24:~/mbedtee-build/buildroot$ tree configs/ | grep mbedtee_vexpress
 > Switch to the <u>**buildroot**</u> directory (**mbedtee-build/buildroot**) to do the config and make.
 >
 > "make clean" is required before switching to another target.
-
-
 
 ### AArch64 (CA78 Series)
 
@@ -704,7 +672,7 @@ kapa@ubuntu24:~/mbedtee-build/buildroot$ tree configs/ | grep mbedtee_vexpress
 - System Canvas - Click the **Run** button -> Select the **ISIM system** -> Input below command to run the target -> Click **OK**
 
   ```
-  "%ISIM%" --data /home/kapa/mbedtee-build/buildroot/output/images/mbedtee.bin@0x80000000 --data /home/kapa/mbedtee-build/buildroot/output/images/linux.dtb@0x85f00000 --data /home/kapa/mbedtee-build/buildroot/output/images/Image@0x86000000 --start FVP_Base_Cortex_A78.cluster0.cpu0=0x80000000 --start FVP_Base_Cortex_A78.cluster0.cpu1=0x80000000 --start FVP_Base_Cortex_A78.cluster0.cpu2=0x80000000 --start FVP_Base_Cortex_A78.cluster0.cpu3=0x80000000 --param bp.secure_memory=false -S --run -C pctl.startup=0.0.*.0 -C bp.vis.rate_limit-enable=false
+  "%ISIM%" --data /home/kapa/mbedtee-build/buildroot/output/images/mbedtee.bin@0x80000000 --data /home/kapa/mbedtee-build/buildroot/output/images/linux.dtb@0x85f00000 --data /home/kapa/mbedtee-build/buildroot/output/images/Image@0x86000000 --start FVP_Base_Cortex_A78.cluster0.cpu0=0x80000000 --start FVP_Base_Cortex_A78.cluster0.cpu1=0x80000000 --start FVP_Base_Cortex_A78.cluster0.cpu2=0x80000000 --start FVP_Base_Cortex_A78.cluster0.cpu3=0x80000000 --param bp.secure_memory=false -C bp.virtio_rng.enabled=1 -C bp.virtioblockdevice.image_path=/home/kapa/mbedtee-build/buildroot/output/images/data.img -S --run -C pctl.startup=0.0.*.0 -C bp.vis.rate_limit-enable=false
   ```
 
 - Command window of Run:
@@ -823,7 +791,7 @@ kapa@ubuntu24:~/mbedtee-build/buildroot$ tree configs/ | grep mbedtee_vexpress
 - System Canvas - Click the **Run** button -> Select the **ISIM system** -> Input below command to run the target -> Click **OK**
 
   ```
-  "%ISIM%" --data /home/kapa/mbedtee-build/buildroot/output/images/mbedtee.bin@0x80100000 --data /home/kapa/mbedtee-build/buildroot/output/images/linux.dtb@0x85F00000 --data /home/kapa/mbedtee-build/buildroot/output/images/Image@0x86008000 --start FVP_VE_Cortex_A15x4.cluster.cpu0=0x80100000 --start FVP_VE_Cortex_A15x4.cluster.cpu1=0x80100000 --start FVP_VE_Cortex_A15x4.cluster.cpu2=0x80100000 --start FVP_VE_Cortex_A15x4.cluster.cpu3=0x80100000 --param motherboard.vis.rate_limit-enable=false
+  "%ISIM%" --data /home/kapa/mbedtee-build/buildroot/output/images/mbedtee.bin@0x80100000 --data /home/kapa/mbedtee-build/buildroot/output/images/linux.dtb@0x85F00000 --data /home/kapa/mbedtee-build/buildroot/output/images/Image@0x86008000 --start FVP_VE_Cortex_A15x4.cluster.cpu0=0x80100000 --start FVP_VE_Cortex_A15x4.cluster.cpu1=0x80100000 --start FVP_VE_Cortex_A15x4.cluster.cpu2=0x80100000 --start FVP_VE_Cortex_A15x4.cluster.cpu3=0x80100000 -C motherboard.virtioblockdevice.image_path=/home/kapa/mbedtee-build/buildroot/output/images/data.img --param motherboard.vis.rate_limit-enable=false
   ```
 
 ### AArch32 (CA9 Series)

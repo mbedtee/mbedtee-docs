@@ -303,8 +303,10 @@ xterm -geometry 128x32 -e "telnet localhost 5555" & xterm -geometry 128x32 -e "t
 Config/Make: make clean && make mbedtee_qemu_virt_riscv64_defconfig && make
 
 ```
-../qemu/build/qemu-system-riscv64 -M virt -smp 4 -m 8G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -M aclint=on -drive file=output/images/data.img,if=none,format=raw,id=vblk0 -device virtio-blk-device,bus=virtio-mmio-bus.0,drive=vblk0 -device virtio-rng-device,bus=virtio-mmio-bus.1 -serial stdio
+../qemu/build/qemu-system-riscv64 -M virt -smp 4 -m 8G -bios none -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -M aclint=on -drive file=output/images/data.img,if=none,format=raw,id=vblk0 -device virtio-blk-device,bus=virtio-mmio-bus.0,drive=vblk0 -device virtio-rng-device,bus=virtio-mmio-bus.1 -serial stdio
 ```
+
+> `-bios none` can prevent the re-loading of the OpenSBI firmware when the machine resets.
 
 ### RISCV64-APLIC (TEE only)
 
@@ -313,7 +315,7 @@ Run with APLIC direct mode interrupt controller.
 Config/Make: make clean && make mbedtee_qemu_virt_riscv64_aplic_defconfig && make
 
 ```
-../qemu/build/qemu-system-riscv64 -M virt,aia=aplic,aclint=on -smp 4 -m 4G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -serial stdio
+../qemu/build/qemu-system-riscv64 -M virt,aia=aplic,aclint=on -smp 4 -m 4G -bios none -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -serial stdio
 ```
 
 ### RISCV64 T-Head C906 (TEE only)
@@ -323,7 +325,7 @@ Run with T-Head XuanTie C906 single-core CPU (RV64GCV, xtheadcmo cache ops, PLIC
 Config/Make: make clean && make mbedtee_qemu_virt_riscv64_thead_c906_defconfig && make
 
 ```
-../qemu/build/qemu-system-riscv64 -M virt -cpu thead-c906 -smp 1 -m 4G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -M aclint=on -serial stdio
+../qemu/build/qemu-system-riscv64 -M virt -cpu thead-c906 -smp 1 -m 4G -bios none -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -M aclint=on -serial stdio
 ```
 
 ### RISCV32 (TEE only)
@@ -331,7 +333,7 @@ Config/Make: make clean && make mbedtee_qemu_virt_riscv64_thead_c906_defconfig &
 Config/Make: make clean && make mbedtee_qemu_virt_riscv32_defconfig && make
 
 ```
-../qemu/build/qemu-system-riscv32 -M virt,aclint=on -smp 4 -m 2G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -drive file=output/images/data.img,if=none,format=raw,id=vblk0 -device virtio-blk-device,bus=virtio-mmio-bus.0,drive=vblk0 -device virtio-rng-device,bus=virtio-mmio-bus.1 -serial stdio
+../qemu/build/qemu-system-riscv32 -M virt,aclint=on -smp 4 -m 2G -bios none -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -drive file=output/images/data.img,if=none,format=raw,id=vblk0 -device virtio-blk-device,bus=virtio-mmio-bus.0,drive=vblk0 -device virtio-rng-device,bus=virtio-mmio-bus.1 -serial stdio
 ```
 
 ### SifiveUnleashed RISCV32 (TEE only)
@@ -339,7 +341,7 @@ Config/Make: make clean && make mbedtee_qemu_virt_riscv32_defconfig && make
 Config/Make: make clean && make mbedtee_qemu_sifive_u_riscv32_defconfig && make
 
 ```
-../qemu/build/qemu-system-riscv32 -M sifive_u -smp 5 -m 2G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -device loader,addr=0x80000000,cpu-num=4 -serial stdio
+../qemu/build/qemu-system-riscv32 -M sifive_u -smp 5 -m 2G -bios none -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -device loader,addr=0x80000000,cpu-num=4 -serial stdio
 ```
 
 ### SifiveUnleashed RISCV64  (TEE only)
@@ -347,7 +349,7 @@ Config/Make: make clean && make mbedtee_qemu_sifive_u_riscv32_defconfig && make
 Config/Make: make clean && make mbedtee_qemu_sifive_u_riscv64_defconfig && make
 
 ```
-../qemu/build/qemu-system-riscv64 -M sifive_u -smp 5 -m 4G -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -device loader,addr=0x80000000,cpu-num=4 -serial stdio
+../qemu/build/qemu-system-riscv64 -M sifive_u -smp 5 -m 4G -bios none -device loader,file=output/images/mbedtee.bin,addr=0x80000000,force-raw=on -device loader,addr=0x80000000,cpu-num=0 -device loader,addr=0x80000000,cpu-num=1 -device loader,addr=0x80000000,cpu-num=2 -device loader,addr=0x80000000,cpu-num=3 -device loader,addr=0x80000000,cpu-num=4 -serial stdio
 ```
 
 ### Andes AE350 RISCV32 (TEE only)
